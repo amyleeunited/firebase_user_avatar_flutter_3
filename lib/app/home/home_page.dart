@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:firebase_user_avatar_flutter/app/home/about_page.dart';
 import 'package:firebase_user_avatar_flutter/common_widgets/avatar.dart';
@@ -91,7 +92,15 @@ class HomePage extends StatelessWidget {
     return StreamBuilder<AvatarReference>(
       stream: database.avatarReferenceStream(),
       builder: (context, snapshot) {
+        if(snapshot.hasError) return Text('Error: ${snapshot.error}');
+        switch (snapshot.connectionState) {
+          case ConnectionState.none: print('None'); break;
+          case ConnectionState.waiting: print('Waiting...'); break;
+          case ConnectionState.active: print('Active ${snapshot.data}'); break;
+          case ConnectionState.done: print('Done ${snapshot.data}'); break;
+        }
         final avatarReference = snapshot.data;
+        print(Random().nextInt(10));
         return Avatar(
           photoUrl: avatarReference?.downloadUrl,
           radius: 50,
